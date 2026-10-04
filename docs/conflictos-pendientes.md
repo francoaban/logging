@@ -27,7 +27,7 @@
 | #    | Decisión pendiente                                                           | Opciones                     | Criterio de resolución                                                                                                                               | Desbloquea                       |
 | ---- | ---------------------------------------------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
 | C-7a | CQRS + read model separado desde el día 1 o contrato desacoplado y migración | Contrato desacoplado (YAGNI) | `ReportQueryRepository` ya es el punto de inversión; construir infra de read model sin volumen real es sobre-ingeniería. Revisar cuando haya volumen | `ReadModelReportQueryRepository` |
-| C-7b | PDF en el core o adapter opcional                                            | Adapter opcional             | PDF fuera de la dependencia base (`@modulo-logging/format-pdf`), mismo criterio que Express/Fastify/Nest como peers                                  | `PdfReportFormatStrategy`        |
+| C-7b | PDF en el core o adapter opcional                                            | Adapter opcional             | PDF fuera de la dependencia base (`@logging/format-pdf`), mismo criterio que Express/Fastify/Nest como peers                                  | `PdfReportFormatStrategy`        |
 
 ## Fase 8 — Autorización de reportes
 

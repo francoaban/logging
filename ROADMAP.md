@@ -179,7 +179,7 @@ sin que el core dependa de ninguno de ellos.
   `contextManager.run(executionContext, next)`.
 - Los tres (`Express`, `Fastify`, `Nest`) exponen el mismo comportamiento
   observable — un test de contrato corre la misma suite contra los tres.
-- Se publican como _subpath exports_ (`modulo-logging/express`, etc.), con
+- Se publican como _subpath exports_ (`logging/express`, etc.), con
   Express/Fastify/Nest como `peerDependencies`, nunca como `dependencies` del core.
 
 ## Fase 5 — Asincronía y Resiliencia

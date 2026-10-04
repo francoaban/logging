@@ -1,7 +1,8 @@
 {
-  "name": "modulo-logging",
+  "name": "logging",
   "version": "0.0.1",
-  "description": "Modulo de logging, eventos, mensajes y reportes agnostico de framework y persistencia",
+  "description": "Modulo reutilizable de logging, eventos, mensajes y reportes para aplicaciones Node.js: agnóstico de framework web y motor de persistencia, con pipeline síncrono, contexto distribuido (AsyncLocalStorage/OpenTelemetry), sampling y rate limiting, redacción de campos sensibles, transports pluggables y reporting con autorización RBAC + scopes.",
+  "author": "Franco Emanuel Aban Tejerina",
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,7 +13,8 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
@@ -35,7 +37,7 @@
     "reports",
     "observability"
   ],
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "cockatiel": "^4.0.0",
     "rotating-file-stream": "^3.2.10",

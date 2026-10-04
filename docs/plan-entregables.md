@@ -20,7 +20,7 @@
 | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Objetivo                | Correlation por request (`x-correlation-id` entrante o nuevo) envolviendo el resto del request en `contextManager.run`, con el mismo comportamiento observable en Express, Fastify y Nest.                     |
 | Arquitectura cubierta   | C4 L2: `Public API / Facade` ↔ `Async Worker`/broker transparentes; correlación distribuida del Context (niveles C4).                                                                                          |
-| Evidencia               | Middlewares como subpath exports (`modulo-logging/express`, etc.) con Express/Fastify/Nest como `peerDependencies`; una suite de contrato corre la misma batería contra los tres.                              |
+| Evidencia               | Middlewares como subpath exports (`logging/express`, etc.) con Express/Fastify/Nest como `peerDependencies`; una suite de contrato corre la misma batería contra los tres.                              |
 | Criterios de aceptación | Nunca se inventa un `correlation_id` si ya existe; cada middleware envuelve el handler en `contextManager.run`; mismo comportamiento observable en los tres frameworks; el core sigue sin depender de ninguno. |
 | Dependencias            | Facade y `ExecutionContextResolver` (listos del Entregable 1).                                                                                                                                                 |
 

@@ -80,7 +80,7 @@ Estructura objetivo del paquete (se completa de forma incremental, fase a fase, 
 el [roadmap](#roadmap-y-criterios-de-aceptación)).
 
 ```text
-modulo-logging/
+logging/
 ├── package.json
 ├── tsconfig.json # typecheck de src/ + tests/ (no emite)
 ├── tsconfig.build.json # build de producción, solo src/ (emite a dist/)
@@ -318,4 +318,4 @@ test:unit`, `test:integration`, `test:security`, etc.):
 
 ## Licencia
 
-UNLICENSED (uso privado del proyecto).
+[MIT](./LICENSE).

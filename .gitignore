@@ -35,7 +35,6 @@ Desktop.ini
 # IDE and editor files
 .idea/
 .vscode/
-.github/
 *.swp
 *.swo
 *~
