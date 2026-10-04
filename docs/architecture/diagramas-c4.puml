@@ -1,0 +1,91 @@
+' Renderizar cada bloque @startuml/@enduml por separado
+' (p. ej. con el plugin de PlantUML o https://www.plantuml.com/plantuml).
+'
+' La descripción en prosa de estos mismos diagramas está en
+' arquitectura-c4.md; este archivo es la única fuente realmente renderizable.
+
+' ==========================================================
+' Nivel 1 — Context
+' ==========================================================
+@startuml Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+LAYOUT_LEFT_RIGHT()
+
+Person(developer, "Desarrollador", "Integra y configura el módulo")
+System(host, "Aplicación Node.js Host", "Aplicación que genera logs, eventos y mensajes")
+System(logModule, "Módulo de Logging", "Registra, clasifica, transporta, persiste y reporta información operativa")
+System_Ext(queue, "Message Broker", "RabbitMQ / Kafka / Redis Streams u otro broker")
+System_Ext(storage, "Almacenamiento", "PostgreSQL / MongoDB / OpenSearch / otro")
+System_Ext(reportConsumer, "Consumidor de Reportes", "Backoffice, API o proceso externo")
+
+Rel(developer, host, "Configura e integra")
+Rel(host, logModule, "Registra logs, eventos, mensajes y solicita reportes")
+Rel(logModule, queue, "Publica/consume registros cuando se usa procesamiento asíncrono")
+Rel(logModule, storage, "Persiste y consulta registros")
+Rel(reportConsumer, logModule, "Consulta reportes y métricas")
+@enduml
+
+' ==========================================================
+' Nivel 2 — Container
+' ==========================================================
+@startuml Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Person(appUser, "Consumidor", "Aplicación o servicio que utiliza el módulo")
+System_Boundary(logging, "Logging Module") {
+  Container(api, "Public API / Facade", "TypeScript", "API mínima para logger.info(), event(), message(), audit() y reportes")
+  Container(core, "Application Core", "TypeScript", "Casos de uso, configuración, feature flags y orquestación")
+  Container(domain, "Domain", "TypeScript", "Entidades, value objects, reglas y contratos")
+  Container(pipeline, "Processing Pipeline", "TypeScript", "Filtros, clasificación, normalización y enriquecimiento")
+  Container(worker, "Async Worker", "Node.js", "Batching, retry, consumo de colas y persistencia asíncrona")
+  Container(reporting, "Reporting Engine", "TypeScript", "Consultas, agregaciones, filtros y generación de reportes (opcional, ver tecnologias-recomendadas.md)")
+  Container(adapter, "Adapters", "TypeScript", "PostgreSQL, MongoDB, HTTP, File, Console y Queue")
+}
+System_Ext(db, "Database / Search Storage", "Motor de persistencia")
+System_Ext(broker, "Message Broker", "Cola o streaming")
+
+Rel(appUser, api, "Usa")
+Rel(api, core, "Invoca casos de uso")
+Rel(core, domain, "Aplica reglas")
+Rel(core, pipeline, "Procesa registros")
+Rel(core, reporting, "Solicita reportes (si reporting está habilitado)")
+Rel(core, worker, "Entrega trabajo asíncrono")
+Rel(worker, adapter, "Persiste/transmite")
+Rel(reporting, adapter, "Consulta")
+Rel(adapter, db, "Lee/escribe")
+Rel(adapter, broker, "Publica/consume")
+@enduml
+
+' ==========================================================
+' Nivel 3 — Component (Application Core)
+' ==========================================================
+@startuml Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+LAYOUT_LEFT_RIGHT()
+
+Container_Boundary(core, "Application Core") {
+  Component(facade, "LoggingFacade", "Facade", "Punto de entrada público")
+  Component(createLog, "CreateLog", "Command/Use Case", "Crea registros")
+  Component(registerEvent, "RegisterEvent", "Command/Use Case", "Registra eventos")
+  Component(registerMessage, "RegisterMessage", "Command/Use Case", "Registra mensajes")
+  Component(classify, "EventClassifier", "Strategy", "Clasifica eventos")
+  Component(features, "FeatureManager", "Feature Toggle", "Activa/desactiva capacidades")
+  Component(context, "ContextManager", "Context", "Request ID y Correlation ID")
+  Component(pipeline, "ProcessingPipeline", "Chain of Responsibility", "Filtros, redacción y normalización")
+  Component(dispatcher, "Dispatcher", "Strategy/Observer", "Envía a uno o varios destinos")
+  Component(report, "ReportService", "Query Service", "Genera reportes (opcional)")
+}
+
+Rel(facade, features, "Consulta")
+Rel(facade, context, "Agrega contexto")
+Rel(facade, createLog, "Invoca")
+Rel(facade, registerEvent, "Invoca")
+Rel(facade, registerMessage, "Invoca")
+Rel(facade, report, "Solicita (si reporting está habilitado)")
+Rel(createLog, pipeline, "Procesa")
+Rel(registerEvent, classify, "Clasifica")
+Rel(registerEvent, pipeline, "Procesa")
+Rel(registerMessage, pipeline, "Procesa")
+Rel(pipeline, dispatcher, "Entrega")
+@enduml
